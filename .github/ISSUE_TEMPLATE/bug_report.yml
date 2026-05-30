@@ -1,0 +1,104 @@
+name: Bug report
+description: Report a reproducible bug in @dsbasko/cookbook-engine
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug report!
+
+        `@dsbasko/cookbook-engine` is a **data-only** engine — a course is just
+        `course.yaml` + `lectures/` + `public/` + a thin `web/` wrapper. To help us
+        reproduce the issue, please share your engine version, your environment, and a
+        minimal `course.yaml` (or a link to a repro repo) whenever possible.
+
+        Before opening, please make sure you have read the relevant section of the
+        `README.md` and searched the existing issues.
+  - type: input
+    id: package-version
+    attributes:
+      label: Package version
+      description: Which version of `@dsbasko/cookbook-engine` are you running?
+      placeholder: e.g. 1.4.2 (run `npm ls @dsbasko/cookbook-engine`)
+    validations:
+      required: true
+  - type: input
+    id: node-version
+    attributes:
+      label: Node version
+      description: Output of `node --version`. The engine requires Node >= 20.
+      placeholder: e.g. v20.11.1
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Reproduction steps
+      description: A clear, step-by-step list of how to reproduce the bug.
+      placeholder: |
+        1. Create a course with `course.yaml` containing ...
+        2. Run `pnpm smoke` / `next build` ...
+        3. Open `/lectures/...`
+        4. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected-vs-actual
+    attributes:
+      label: Expected vs actual behavior
+      description: What did you expect to happen, and what actually happened instead?
+      placeholder: |
+        **Expected:** the lesson gate should unlock the next lesson once progress is saved.
+
+        **Actual:** the next lesson stays locked after reload.
+    validations:
+      required: true
+  - type: input
+    id: repro-link
+    attributes:
+      label: Minimal course.yaml / repro repo
+      description: >-
+        Optional. A link to a Gist with a minimal `course.yaml`, or a minimal
+        repository that reproduces the issue. This dramatically speeds up triage.
+      placeholder: e.g. https://github.com/your-name/cookbook-engine-repro
+    validations:
+      required: false
+  - type: input
+    id: environment-os
+    attributes:
+      label: Environment / OS
+      description: Operating system, browser (for runtime bugs), and package manager.
+      placeholder: e.g. macOS 14.4, pnpm 9.1.0, Chrome 124
+    validations:
+      required: false
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      description: Which part of the engine does the bug relate to?
+      multiple: false
+      options:
+        - Build / SSG (next build, output:'export')
+        - Config (createCookbookConfig, course.yaml)
+        - Routing / pages / entry-points
+        - Lesson gating / progress
+        - Markdown / MDX rendering
+        - SEO / sitemap / OG images
+        - i18n / language
+        - Theme / reading prefs
+        - Build hooks (sync-images, fix-static-images)
+        - Other / not sure
+    validations:
+      required: false
+  - type: checkboxes
+    id: acknowledgements
+    attributes:
+      label: Acknowledgements
+      description: Please confirm the following before submitting.
+      options:
+        - label: I have searched the existing issues and this bug has not already been reported.
+          required: true
+        - label: I have read the relevant section of the `README.md`.
+          required: false
