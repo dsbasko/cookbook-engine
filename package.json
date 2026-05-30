@@ -1,0 +1,92 @@
+{
+  "name": "@dsbasko/cookbook-engine",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Reusable Next.js engine for cookbook-style courses driven by course.yaml + markdown lectures.",
+  "author": "Dmitriy Basenko",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "src",
+    "assets",
+    "scripts",
+    "README.md",
+    "LICENSE",
+    "!**/*.test.ts",
+    "!**/*.test.tsx",
+    "!**/__snapshots__"
+  ],
+  "bin": {
+    "cookbook-sync-images": "./scripts/sync-images.mjs",
+    "cookbook-fix-static-images": "./scripts/fix-static-image-extensions.mjs"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./config": "./src/config.mjs",
+    "./layout/root": "./src/layout/root.tsx",
+    "./layout/lang": "./src/layout/lang.tsx",
+    "./pages/root": "./src/pages/root.tsx",
+    "./pages/home": "./src/pages/home.tsx",
+    "./pages/module": "./src/pages/module.tsx",
+    "./pages/lesson": "./src/pages/lesson.tsx",
+    "./pages/not-found-root": "./src/pages/not-found-root.tsx",
+    "./pages/not-found-lang": "./src/pages/not-found-lang.tsx",
+    "./og/icon": "./src/og/icon.tsx",
+    "./og/opengraph-image": "./src/og/opengraph-image.tsx",
+    "./seo/sitemap": "./src/seo/sitemap.ts",
+    "./seo/robots": "./src/seo/robots.ts",
+    "./styles/*.css": "./src/styles/*.css"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "examples:dev": "pnpm -C examples/web dev",
+    "smoke": "pnpm -C examples/web build"
+  },
+  "peerDependencies": {
+    "next": "^14.2.18",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "dependencies": {
+    "@types/hast": "3.0.4",
+    "@types/js-yaml": "4.0.9",
+    "hast-util-to-jsx-runtime": "2.3.6",
+    "js-yaml": "4.1.0",
+    "rehype-autolink-headings": "7.1.0",
+    "rehype-pretty-code": "0.13.2",
+    "rehype-slug": "6.0.0",
+    "remark-gfm": "4.0.1",
+    "remark-github-blockquote-alert": "^2.1.0",
+    "remark-parse": "11.0.0",
+    "remark-rehype": "11.1.2",
+    "shiki": "1.29.2",
+    "unified": "11.0.5"
+  },
+  "devDependencies": {
+    "@types/node": "20.17.9",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "@vitejs/plugin-react": "4.3.4",
+    "@vitest/ui": "2.1.8",
+    "eslint": "8.57.1",
+    "eslint-config-next": "14.2.18",
+    "eslint-config-prettier": "9.1.0",
+    "jsdom": "25.0.1",
+    "next": "14.2.18",
+    "prettier": "3.4.2",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "tsx": "4.19.2",
+    "typescript": "5.7.2",
+    "vitest": "2.1.8"
+  }
+}

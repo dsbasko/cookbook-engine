@@ -1,0 +1,7 @@
+# The engine repo doubles as a pnpm workspace so the examples/ harness can
+# consume the package by name (@dsbasko/cookbook-engine) via a workspace link
+# instead of a registry install. The root (`.`) is the engine package itself;
+# examples/web is the thin consumer that re-exports the engine entry-points.
+packages:
+  - .
+  - examples/web
