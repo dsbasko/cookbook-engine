@@ -1,0 +1,26 @@
+# dependencies
+/node_modules
+node_modules/
+
+# build output
+/dist
+/out
+.next/
+examples/web/out/
+
+# testing
+/coverage
+
+# typescript
+*.tsbuildinfo
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+.pnpm-debug.log*
+
+# env files
+.env*.local
