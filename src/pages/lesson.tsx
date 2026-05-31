@@ -1,0 +1,260 @@
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { LessonLockedInterstitial } from '@/components/LessonLockedInterstitial';
+import { LessonNav, type LessonNavLink } from '@/components/LessonNav';
+import { LessonPageLayout } from '@/components/LessonPageLayout';
+import { LessonSideMeta } from '@/components/LessonSideMeta';
+import { ReadingProgress } from '@/components/ReadingProgress';
+import { Toc } from '@/components/Toc';
+import { TranslationBanner } from '@/components/TranslationBanner';
+import {
+  findLesson,
+  flattenLessons,
+  getNextLesson,
+  getPrevLesson,
+  resolveBrandName,
+  type FlatLessonEntry,
+} from '@/lib/course';
+import { loadCourse } from '@/lib/course-loader';
+import { getDict } from '@/lib/i18n';
+import { isLang, LANGS, type Lang } from '@/lib/lang';
+import { getLessonContent } from '@/lib/lesson';
+import { renderLessonMarkdown } from '@/lib/markdown';
+import { extractDescription } from '@/lib/description';
+import { buildLessonLangMap } from '@/lib/sitemap';
+import { buildAssetUrl, buildSiteUrl, getRuntimeBasePath } from '@/lib/site-url';
+
+type LessonPageProps = {
+  params: { lang: string; module: string; lesson: string };
+};
+
+export function generateStaticParams(): Array<{
+  lang: Lang;
+  module: string;
+  lesson: string;
+}> {
+  // Pages are emitted for every (lang × module × lesson) triple — even when
+  // the EN translation is missing. The page renders with a fallback banner
+  // and noindex metadata in that case (see generateMetadata + render below).
+  const course = loadCourse('ru');
+  const lessonPairs = flattenLessons(course).map((entry) => ({
+    module: entry.moduleId,
+    lesson: entry.lesson.slug,
+  }));
+  return LANGS.flatMap((lang) =>
+    lessonPairs.map((pair) => ({ lang, ...pair })),
+  );
+}
+
+export async function generateMetadata({
+  params,
+}: LessonPageProps): Promise<Metadata> {
+  if (!isLang(params.lang)) return {};
+  const lang = params.lang as Lang;
+  const t = getDict(lang);
+  const course = loadCourse(lang);
+  const lesson = findLesson(course, params.module, params.lesson);
+  if (!lesson) {
+    return { title: `${t.notFoundTitle} · ${resolveBrandName(course)}` };
+  }
+
+  const courseDescription = course.description.replace(/\s+/g, ' ').trim();
+  let description = courseDescription;
+  let fallbackUsed = false;
+  try {
+    const content = await getLessonContent(params.module, params.lesson, lang);
+    fallbackUsed = content.fallbackUsed;
+    // When EN falls back to the RU README, the markdown is Russian — extracting
+    // a description from it would leak RU text into the EN page's <meta>. Keep
+    // the EN course-level description instead.
+    if (!fallbackUsed) {
+      description = extractDescription(content.markdown) ?? courseDescription;
+    }
+  } catch {
+    // metadata is best-effort; the page render will surface the real failure.
+  }
+
+  const title = `${lesson.title} · ${course.title}`;
+  const canonicalUrl = buildSiteUrl(course.basePath, [
+    lang,
+    params.module,
+    params.lesson,
+  ]);
+  const ogImage = {
+    url: buildAssetUrl(course.basePath, '/opengraph-image'),
+    width: 1200,
+    height: 630,
+    alt: course.brand?.ogImage?.alt ?? t.ogImageAlt,
+  };
+
+  // Determine EN translation presence independently of the route lang:
+  // `course.hasTranslation` only reflects whichever language the course was
+  // loaded with, but the hreflang map must always say whether the EN copy
+  // exists. On EN we already loaded it; on RU we re-resolve via loadCourse.
+  let hasEn: boolean;
+  if (lang === 'en') {
+    hasEn = !fallbackUsed;
+  } else {
+    const enCourse = loadCourse('en');
+    const enLesson = findLesson(enCourse, params.module, params.lesson);
+    hasEn = enLesson?.hasTranslation ?? false;
+  }
+  const languages = buildLessonLangMap(
+    course.basePath,
+    params.module,
+    params.lesson,
+    hasEn,
+  );
+
+  // EN page falling back to RU content — withhold from search and point the
+  // canonical at the actual RU URL so search engines don't index a duplicate
+  // under the wrong language. Still emit a full openGraph block: without it
+  // social-share unfurls inherit root-layout defaults (og:url=/en/,
+  // og:type=website), which gives misleading previews even though crawlers
+  // honour the noindex.
+  if (lang === 'en' && fallbackUsed) {
+    const ruCanonical = buildSiteUrl(course.basePath, [
+      'ru',
+      params.module,
+      params.lesson,
+    ]);
+    return {
+      title,
+      description,
+      alternates: { canonical: ruCanonical, languages },
+      robots: { index: false, follow: true },
+      openGraph: {
+        type: 'article',
+        siteName: course.title,
+        title,
+        description,
+        url: ruCanonical,
+        locale: 'ru_RU',
+        images: [ogImage],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        description,
+        images: [ogImage.url],
+      },
+    };
+  }
+
+  return {
+    title,
+    description,
+    alternates: { canonical: canonicalUrl, languages },
+    openGraph: {
+      type: 'article',
+      siteName: course.title,
+      title,
+      description,
+      url: canonicalUrl,
+      locale: lang === 'ru' ? 'ru_RU' : 'en_US',
+      images: [ogImage],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [ogImage.url],
+    },
+  };
+}
+
+export default async function LessonPage({ params }: LessonPageProps) {
+  if (!isLang(params.lang)) notFound();
+  const lang = params.lang as Lang;
+  const course = loadCourse(lang);
+  const lesson = findLesson(course, params.module, params.lesson);
+  if (!lesson) {
+    notFound();
+  }
+
+  const { markdown, lang: contentLang, fallbackUsed } = await getLessonContent(
+    params.module,
+    params.lesson,
+    lang,
+  );
+  const { content, toc } = await renderLessonMarkdown(markdown, {
+    moduleId: params.module,
+    slug: params.lesson,
+    basePath: getRuntimeBasePath(course.basePath),
+    course,
+    // Keep emitting `/<route-lang>/` URLs so an EN reader who clicks a sibling
+    // link inside fallback RU content stays on EN routes (and gets the same
+    // fallback banner there). `sourceLang` follows the README we actually
+    // loaded so relative paths are anchored at `i18n/<source>/`.
+    lang,
+    sourceLang: contentLang,
+  });
+
+  const prev = toNavLink(getPrevLesson(course, params.module, params.lesson));
+  const next = toNavLink(getNextLesson(course, params.module, params.lesson));
+
+  const currentModule = course.modules.find((m) => m.id === params.module);
+  const moduleIndex = currentModule
+    ? course.modules.findIndex((m) => m.id === currentModule.id) + 1
+    : 0;
+
+  // Both branches render side-by-side. CSS toggles their visibility via the
+  // `data-lesson-locked` attribute on <html>, which the inline gate-init
+  // script stamps synchronously before <body> is parsed (no flash) and which
+  // GateProvider keeps in sync on the client (route changes, cross-tab
+  // localStorage updates).
+  return (
+    <>
+      <div data-lesson-body>
+        <ReadingProgress />
+        <LessonPageLayout
+          lang={lang}
+          title={lesson.title}
+          tocSlot={<Toc entries={toc} />}
+          sideMetaSlot={
+            currentModule ? (
+              <LessonSideMeta
+                moduleId={currentModule.id}
+                moduleTitle={currentModule.title}
+                moduleIndex={moduleIndex}
+                slug={params.lesson}
+                duration={lesson.duration}
+                tags={lesson.tags}
+              />
+            ) : null
+          }
+          footer={
+            <LessonNav
+              prev={prev}
+              next={next}
+              currentModuleId={params.module}
+              currentSlug={params.lesson}
+            />
+          }
+        >
+          <article className="markdown" data-translation-fallback={fallbackUsed ? 'true' : 'false'}>
+            {lang === 'en' && fallbackUsed ? (
+              <TranslationBanner lang={lang} />
+            ) : null}
+            {content}
+          </article>
+        </LessonPageLayout>
+      </div>
+      <div data-lesson-gate>
+        <LessonLockedInterstitial
+          attemptedModuleId={params.module}
+          attemptedSlug={params.lesson}
+        />
+      </div>
+    </>
+  );
+}
+
+function toNavLink(entry: FlatLessonEntry | null): LessonNavLink | null {
+  if (!entry) return null;
+  return {
+    moduleId: entry.moduleId,
+    slug: entry.lesson.slug,
+    title: entry.lesson.title,
+  };
+}

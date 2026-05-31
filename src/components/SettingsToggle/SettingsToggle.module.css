@@ -1,0 +1,888 @@
+.wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.trigger {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--content-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    color 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease;
+}
+
+.trigger svg {
+  width: 18px;
+  height: 18px;
+}
+
+.trigger:hover,
+.trigger[aria-expanded='true'] {
+  background-color: var(--bg-subtle);
+  color: var(--content-primary);
+  border-color: var(--bg-stroke);
+}
+
+.trigger:focus-visible {
+  outline: 2px solid var(--accent-main);
+  outline-offset: 2px;
+}
+
+/* Mobile-only scrim — hidden on desktop where the popover is anchored. */
+.overlay {
+  display: none;
+}
+
+.popover {
+  position: absolute;
+  bottom: 0;
+  left: calc(100% + var(--space-3));
+  width: 420px;
+  max-width: calc(100vw - var(--layout-sidebar-width) - var(--space-5));
+  max-height: calc(100dvh - var(--space-7));
+  overflow: hidden;
+  background: var(--bg-surface);
+  border: 1px solid var(--bg-stroke);
+  border-radius: var(--radius-md);
+  box-shadow:
+    var(--shadow-md),
+    0 24px 60px rgba(35, 25, 10, 0.12);
+  display: flex;
+  flex-direction: column;
+  z-index: var(--z-popover);
+}
+
+[data-theme='dark'] .popover {
+  box-shadow:
+    var(--shadow-md),
+    0 24px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* Notch pointing at the trigger icon. */
+.popover::before {
+  content: '';
+  position: absolute;
+  left: -7px;
+  bottom: 13px;
+  width: 12px;
+  height: 12px;
+  background: var(--bg-surface);
+  border-left: 1px solid var(--bg-stroke);
+  border-bottom: 1px solid var(--bg-stroke);
+  transform: rotate(45deg);
+}
+
+.popover[hidden] {
+  display: none;
+}
+
+.grabber {
+  display: none;
+}
+
+/* ─── Header ─────────────────────────────────────────────── */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-5) var(--space-4);
+  border-bottom: 1px solid var(--bg-stroke);
+  flex: 0 0 auto;
+}
+
+.headTitles {
+  min-width: 0;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--content-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 2px;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-size-xl, 22px);
+  font-weight: var(--font-weight-semibold, 600);
+  letter-spacing: -0.015em;
+  color: var(--content-primary);
+  line-height: 1.1;
+}
+
+.closeBtn {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--content-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    color 120ms ease,
+    background-color 120ms ease;
+}
+
+.closeBtn:hover {
+  background-color: var(--bg-subtle);
+  color: var(--content-primary);
+}
+
+.closeBtn:focus-visible {
+  outline: 2px solid var(--accent-main);
+  outline-offset: 2px;
+}
+
+/* ─── Body ───────────────────────────────────────────────── */
+
+.body {
+  padding: var(--space-4) var(--space-5) var(--space-6);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.divider {
+  height: 1px;
+  background: var(--bg-stroke);
+  margin: var(--space-2) 0 var(--space-1);
+}
+
+/* Row = small mono caps label + control. Used for theme/lang and for
+   the font/size sub-rows inside text groups. */
+.row {
+  display: grid;
+  grid-template-columns: 50px 1fr;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.rowLabel {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--content-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ─── Text group (Lecture text / Code text) ──────────────── */
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.groupTitle {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--content-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: var(--font-weight-medium, 500);
+}
+
+.preview {
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-subtle);
+  border: 1px solid var(--bg-stroke);
+  border-radius: var(--radius-sm);
+  color: var(--content-primary);
+  line-height: 1.5;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  text-wrap: balance;
+  transition:
+    font-family 150ms ease,
+    font-size 150ms ease;
+}
+
+.previewCode {
+  letter-spacing: 0.005em;
+}
+
+/* ─── Segmented control ──────────────────────────────────── */
+
+.seg {
+  display: inline-flex;
+  width: 100%;
+  background: var(--bg-subtle);
+  border: 1px solid var(--bg-stroke);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+  gap: 2px;
+}
+
+.segOpt {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 7px 10px;
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  color: var(--content-secondary);
+  font-size: 13px;
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 1.4;
+  cursor: pointer;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition:
+    color 120ms ease,
+    background-color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.segOpt:hover {
+  color: var(--content-primary);
+}
+
+.segOpt:focus-visible {
+  outline: 2px solid var(--accent-main);
+  outline-offset: -2px;
+}
+
+.segOpt[data-active='true'] {
+  background: var(--bg-surface);
+  color: var(--content-primary);
+  font-weight: var(--font-weight-semibold, 600);
+  box-shadow:
+    0 1px 2px rgba(35, 25, 10, 0.06),
+    0 0 0 1px rgba(35, 25, 10, 0.04);
+}
+
+[data-theme='dark'] .segOpt[data-active='true'] {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.segMono {
+  font-family: var(--font-mono);
+  letter-spacing: 0.005em;
+}
+
+/* Language pill: small mono code (RU / EN) + label */
+.segLang {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.segLangBadge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: var(--font-weight-medium, 500);
+  letter-spacing: 0.05em;
+  padding: 1px 5px;
+  border: 1px solid var(--bg-stroke);
+  border-radius: 3px;
+  color: var(--content-tertiary);
+  background: var(--bg-default);
+}
+
+.segOpt[data-active='true'] .segLangBadge {
+  color: var(--content-primary);
+  border-color: var(--bg-stroke-strong);
+}
+
+/* Theme pill: small bordered icon (sun / page / moon) + label */
+.segTheme {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.segThemeIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: var(--content-tertiary);
+  flex-shrink: 0;
+}
+
+.segOpt[data-active='true'] .segThemeIcon {
+  color: var(--content-primary);
+}
+
+/* ─── Size stepper ───────────────────────────────────────── */
+
+.sizeStepper {
+  display: grid;
+  grid-template-columns: 32px 1fr 32px auto;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.sizeBtn {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--bg-stroke);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  color: var(--content-secondary);
+  cursor: pointer;
+  transition:
+    color 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease,
+    opacity 120ms ease;
+}
+
+.sizeBtn:hover:not(:disabled) {
+  color: var(--content-primary);
+  border-color: var(--bg-stroke-strong);
+}
+
+.sizeBtn:focus-visible {
+  outline: 2px solid var(--accent-main);
+  outline-offset: -2px;
+}
+
+.sizeBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.sizeBtnGlyphSmall {
+  font-family: var(--font-ui, var(--font-sans));
+  font-size: 10px;
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 1;
+}
+
+.sizeBtnGlyphLarge {
+  font-family: var(--font-ui, var(--font-sans));
+  font-size: 16px;
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 1;
+}
+
+.sizeTrack {
+  position: relative;
+  height: 32px;
+  display: flex;
+  align-items: center;
+}
+
+.sizeRail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 4px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--bg-stroke);
+  border-radius: 999px;
+}
+
+.sizeRailFill {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 4px;
+  background: var(--content-primary);
+  border-radius: 999px;
+  z-index: 1;
+  transition: width 150ms ease;
+}
+
+/* Knob is intentionally hidden — the dots are the visible target. */
+.sizeKnob {
+  display: none;
+}
+
+.sizeTicks {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 2;
+}
+
+.sizeTick {
+  width: 22px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.sizeTickDot {
+  width: 8px;
+  height: 8px;
+  background: var(--bg-surface);
+  border: 1.5px solid var(--bg-stroke-strong);
+  border-radius: 50%;
+  transition:
+    transform 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease;
+}
+
+.sizeTick:hover .sizeTickDot {
+  border-color: var(--content-primary);
+}
+
+.sizeTick[data-active='true'] .sizeTickDot {
+  background: var(--content-primary);
+  border-color: var(--content-primary);
+  transform: scale(1.25);
+}
+
+.sizeTick:focus-visible {
+  outline: 2px solid var(--accent-main);
+  outline-offset: -4px;
+  border-radius: var(--radius-sm);
+}
+
+.sizeValue {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--content-primary);
+  font-weight: var(--font-weight-semibold, 600);
+  font-variant-numeric: tabular-nums;
+  min-width: 42px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.sizeUnit {
+  color: var(--content-tertiary);
+  margin-left: 1px;
+  font-weight: var(--font-weight-regular, 400);
+}
+
+/* Size control wrapper: desktop renders the stepper, mobile renders a
+   segmented size pill. Both are rendered (a11y radiogroup stays consistent
+   between breakpoints) and CSS swaps which one is visible. */
+.sizeControl {
+  display: contents;
+}
+
+.sizeControlMobile {
+  display: none;
+}
+
+/* ─── Resources / GitHub link (mobile-only via media query below) ──── */
+
+.resourcesDivider {
+  display: none;
+}
+
+.resourcesRow {
+  display: none;
+}
+
+.resourceLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--bg-stroke);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface);
+  color: var(--content-primary);
+  text-decoration: none;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease;
+}
+
+.resourceLink:hover,
+.resourceLink:focus-visible {
+  background-color: var(--bg-subtle);
+  border-color: var(--bg-stroke-strong);
+}
+
+.resourceLink:focus-visible {
+  outline: 2px solid var(--accent-main);
+  outline-offset: 2px;
+}
+
+.resourceIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background-color: var(--content-primary);
+  color: var(--bg-default);
+  flex: 0 0 auto;
+}
+
+.resourceIcon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.resourceText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.resourceTitle {
+  font-size: 13px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--content-primary);
+}
+
+.resourceSub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--content-tertiary);
+}
+
+.resourceArrow {
+  font-size: 14px;
+  color: var(--content-tertiary);
+}
+
+/* ─── Free reading (disable progress) ────────────────────── */
+
+.freeReadingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.freeReadingText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.freeReadingTitle {
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--content-primary);
+  line-height: 1.3;
+}
+
+.freeReadingDesc {
+  font-size: var(--font-size-sm);
+  color: var(--content-tertiary);
+  line-height: 1.35;
+}
+
+.switch {
+  flex: 0 0 auto;
+  position: relative;
+  width: 42px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--bg-stroke);
+  border-radius: 999px;
+  background: var(--bg-subtle);
+  cursor: pointer;
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease;
+}
+
+.switch[data-active='true'] {
+  background: var(--content-primary);
+  border-color: var(--content-primary);
+}
+
+.switch:focus-visible {
+  outline: 2px solid var(--accent-main);
+  outline-offset: 2px;
+}
+
+.switchThumb {
+  position: absolute;
+  top: 50%;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  box-shadow: 0 1px 2px rgba(35, 25, 10, 0.2);
+  transform: translateY(-50%);
+  transition: left 140ms ease;
+}
+
+.switch[data-active='true'] .switchThumb {
+  left: calc(100% - 20px);
+  background: var(--bg-default);
+}
+
+.confirm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-subtle);
+  border: 1px solid var(--bg-stroke);
+  border-radius: var(--radius-sm);
+}
+
+.confirmText {
+  font-size: var(--font-size-sm);
+  color: var(--content-secondary);
+  line-height: 1.35;
+  min-width: 0;
+}
+
+.confirmActions {
+  display: inline-flex;
+  gap: var(--space-2);
+  flex: 0 0 auto;
+}
+
+.confirmBtn {
+  padding: 6px 12px;
+  border: 1px solid var(--bg-stroke);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  color: var(--content-secondary);
+  font-size: 13px;
+  font-weight: var(--font-weight-medium, 500);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    color 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease;
+}
+
+.confirmBtn:hover {
+  color: var(--content-primary);
+  border-color: var(--bg-stroke-strong);
+}
+
+.confirmBtn:focus-visible {
+  outline: 2px solid var(--accent-main);
+  outline-offset: 2px;
+}
+
+.confirmBtnDanger {
+  background: var(--content-primary);
+  color: var(--bg-default);
+  border-color: var(--content-primary);
+}
+
+.confirmBtnDanger:hover {
+  color: var(--bg-default);
+  opacity: 0.88;
+}
+
+/* ─── Responsive ─────────────────────────────────────────── */
+
+@media (max-width: 1023px) {
+  /* The trigger sits as a standalone FAB at top-left in mobile (no longer
+     wrapped by the sidebar pill), so it needs its own surface treatment. */
+  .trigger {
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--bg-stroke);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .trigger[aria-expanded='true'] {
+    background-color: var(--content-primary);
+    color: var(--bg-default);
+    border-color: var(--content-primary);
+  }
+
+  .overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 16, 8, 0.32);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: calc(var(--z-popover) - 1);
+    animation: settingsOverlayIn 180ms ease-out;
+  }
+
+  [data-theme='dark'] .overlay {
+    background: rgba(0, 0, 0, 0.55);
+  }
+
+  /* Match the ProgramDrawer mobile chrome: full-viewport surface, no rounded
+     corners, no top shadow, slide-in from the left edge. The sheet/grabber
+     pattern previously used here is dropped so nav and settings read as
+     the same primitive on mobile. */
+  .popover {
+    position: fixed;
+    inset: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    width: 100dvw;
+    max-width: 100vw;
+    max-height: none;
+    height: auto;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background-color: var(--bg-default);
+    animation: settingsDrawerIn 220ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  [data-theme='dark'] .popover {
+    box-shadow: none;
+  }
+
+  .popover::before {
+    display: none;
+  }
+
+  .grabber {
+    display: none;
+  }
+
+  /* Sticky frosted header — mirrors ProgramDrawer.module.css under the same
+     breakpoint so both drawers carry the same eyebrow + title chrome. */
+  .head {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    padding: max(env(safe-area-inset-top), var(--space-4)) var(--space-5)
+      var(--space-4);
+    background-color: color-mix(in srgb, var(--bg-default) 94%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .body {
+    gap: var(--space-5);
+    padding-bottom: calc(var(--space-5) + env(safe-area-inset-bottom));
+  }
+
+  /* Design keeps the row label on the LEFT in mobile (mono uppercase, 56px
+     column) — the segmented control sits next to it. This matches the
+     reference's drawer-settings .mset-row grid: `56px 1fr`. */
+  .row {
+    grid-template-columns: 56px 1fr;
+    gap: var(--space-3);
+    align-items: center;
+  }
+
+  .rowLabel {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+  }
+
+  .segOpt {
+    padding: 8px 10px;
+  }
+
+  /* Swap stepper for a horizontal segmented size selector. The 6 options
+     (14/16/18/20/22/24) scroll horizontally when they don't fit. */
+  .sizeControlDesktop {
+    display: none;
+  }
+
+  .sizeControlMobile {
+    display: flex;
+  }
+
+  .segSizes {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .segSizes::-webkit-scrollbar {
+    display: none;
+  }
+
+  .segSizes .segOpt {
+    flex: 1 0 auto;
+    min-width: 38px;
+    scroll-snap-align: start;
+  }
+
+  /* Surface the GitHub resources card at the bottom of the sheet. */
+  .resourcesDivider {
+    display: block;
+  }
+
+  .resourcesRow {
+    display: grid;
+  }
+}
+
+@media (max-width: 480px) {
+  .seg {
+    padding: 3px;
+  }
+
+  .segOpt {
+    font-size: var(--font-size-sm);
+  }
+}
+
+@keyframes settingsOverlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes settingsDrawerIn {
+  from {
+    transform: translateX(-12px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .popover {
+    animation: none;
+  }
+}

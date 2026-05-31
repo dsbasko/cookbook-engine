@@ -1,0 +1,270 @@
+/* Design tokens — cookbook-engine
+ * Light: warm paper palette (cream + warm grays).
+ * Dark:  deep ink with the same blue accent for continuity.
+ *
+ * Naming (BEM-friendly): --<category>-<role>.
+ *   bg-*       — surface fills
+ *   content-*  — text/icon foregrounds
+ *   accent-*   — semantic accents (action, success, notice, critical)
+ *   font-*     — font-family stacks (set in app/layout.tsx)
+ *   space-*    — spacing scale
+ *   radius-*   — corner radii
+ *   shadow-*   — elevation shadows
+ *   z-*        — z-index scale
+ *
+ * Accent: each theme declares a single `--accent-base`; `--accent-main` reads
+ * from it so a course can re-skin the action colour by overriding one token.
+ * `buildBrandAccentCss()` (lib/course.ts) injects a higher-specificity
+ * `:root[data-theme=…]` block from `course.yaml.brand.accent` that wins this
+ * cascade and re-derives the hover/soft shades via color-mix.
+ */
+
+:root {
+  /* Spacing scale (4px grid) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+
+  /* Type scale */
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 22px;
+  --font-size-2xl: 28px;
+  --font-size-3xl: 36px;
+  --font-size-4xl: 44px;
+
+  --line-height-tight: 1.2;
+  --line-height-snug: 1.4;
+  --line-height-normal: 1.6;
+  --line-height-relaxed: 1.75;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Radii */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-pill: 999px;
+
+  /* Layout */
+  --layout-sidebar-width: 64px;
+  --layout-content-max: 720px;
+  --layout-toc-width: 280px;
+
+  /* Z-index */
+  --z-drawer: 100;
+  --z-overlay: 90;
+  --z-header: 80;
+  --z-popover: 110;
+
+  /* Reading preferences — overridden by data-* on <html>. Default = step 1 (16px prose, 14px code). */
+  --prose-font-size: 16px;
+  --code-font-size: 14px;
+  --prose-font-active: var(--font-serif);
+  --code-font-active: var(--font-mono);
+  --prose-max-width: 900px;
+}
+
+/* Six-step scale matching design reference: 14 / 16 / 18 / 20 / 22 / 24 px.
+ * Article max-width scales with the same step so the line-length budget
+ * (~52–58 characters) stays comfortable as prose grows. */
+[data-prose-size='0'] {
+  --prose-font-size: 14px;
+  --prose-max-width: 820px;
+}
+[data-prose-size='1'] {
+  --prose-font-size: 16px;
+  --prose-max-width: 900px;
+}
+[data-prose-size='2'] {
+  --prose-font-size: 18px;
+  --prose-max-width: 980px;
+}
+[data-prose-size='3'] {
+  --prose-font-size: 20px;
+  --prose-max-width: 1060px;
+}
+[data-prose-size='4'] {
+  --prose-font-size: 22px;
+  --prose-max-width: 1140px;
+}
+[data-prose-size='5'] {
+  --prose-font-size: 24px;
+  --prose-max-width: 1220px;
+}
+
+/* Mobile: shift the prose scale down one step so the default (step 1)
+ * renders at 15px, matching pre-feature mobile lesson rendering. */
+@media (max-width: 720px) {
+  :root {
+    --prose-font-size: 15px;
+  }
+  [data-prose-size='0'] {
+    --prose-font-size: 13px;
+  }
+  [data-prose-size='1'] {
+    --prose-font-size: 15px;
+  }
+  [data-prose-size='2'] {
+    --prose-font-size: 16px;
+  }
+  [data-prose-size='3'] {
+    --prose-font-size: 18px;
+  }
+  [data-prose-size='4'] {
+    --prose-font-size: 20px;
+  }
+  [data-prose-size='5'] {
+    --prose-font-size: 22px;
+  }
+}
+
+[data-code-size='0'] {
+  --code-font-size: 14px;
+}
+[data-code-size='1'] {
+  --code-font-size: 16px;
+}
+[data-code-size='2'] {
+  --code-font-size: 18px;
+}
+[data-code-size='3'] {
+  --code-font-size: 20px;
+}
+[data-code-size='4'] {
+  --code-font-size: 22px;
+}
+[data-code-size='5'] {
+  --code-font-size: 24px;
+}
+
+[data-prose-font='serif'] {
+  --prose-font-active: var(--font-serif);
+}
+[data-prose-font='sans'] {
+  --prose-font-active: var(--font-prose-inter);
+}
+[data-prose-font='slab'] {
+  --prose-font-active: var(--font-prose-slab);
+}
+
+[data-code-font='jetbrains'] {
+  --code-font-active: var(--font-mono);
+}
+[data-code-font='fira'] {
+  --code-font-active: var(--font-code-fira);
+}
+
+/* Light theme — neo-academic cream + deep moss accent. */
+[data-theme='light'] {
+  --bg-default: #faf7f2;
+  --bg-surface: #ffffff;
+  --bg-subtle: #f3efe7;
+  --bg-muted: #ece7dc;
+  --bg-stroke: #e6e0d3;
+  --bg-stroke-strong: #d4cdba;
+
+  --content-primary: #1a1a1a;
+  --content-secondary: #5b5750;
+  --content-tertiary: #8a857b;
+  --content-inverse: #faf7f2;
+  --content-link: #2e3b2e;
+  --content-link-hover: #243024;
+
+  --accent-base: #2e3b2e;
+  --accent-main: var(--accent-base);
+  --accent-main-hover: #243024;
+  --accent-main-soft: rgba(46, 59, 46, 0.1);
+  --accent-success: #1f8a5b;
+  --accent-success-soft: rgba(31, 138, 91, 0.12);
+  --accent-notice: #c1862a;
+  --accent-notice-soft: rgba(193, 134, 42, 0.14);
+  --accent-critical: #b53120;
+  --accent-critical-soft: rgba(181, 49, 32, 0.12);
+
+  --shadow-sm: 0 1px 2px rgba(35, 25, 10, 0.04), 0 0 0 1px rgba(35, 25, 10, 0.04);
+  --shadow-md: 0 4px 16px rgba(35, 25, 10, 0.06), 0 1px 3px rgba(35, 25, 10, 0.04);
+  --shadow-lg: 0 12px 32px rgba(35, 25, 10, 0.12);
+}
+
+/* Paper theme — warm sepia for long-form reading.
+ * Bg/fg pair #f3eedc / #2f2a24 ≈ 12.2:1 (above WCAG AAA for body text).
+ * Accent shifts from moss to muted brown to reinforce the paper identity. */
+[data-theme='paper'] {
+  color-scheme: light;
+
+  --bg-default: #f3eedc;
+  --bg-surface: #fbf7ea;
+  --bg-subtle: #ede5cf;
+  --bg-muted: #e8ddc5;
+  --bg-stroke: #e5dcc8;
+  --bg-stroke-strong: #d8ccb3;
+
+  --content-primary: #2f2a24;
+  --content-secondary: #5b5148;
+  --content-tertiary: #6b5e52;
+  --content-inverse: #fbf7ea;
+  --content-link: #1f5c57;
+  --content-link-hover: #174842;
+
+  --accent-base: #7e6149;
+  --accent-main: var(--accent-base);
+  --accent-main-hover: #65503c;
+  --accent-main-soft: rgba(126, 97, 73, 0.12);
+  --accent-success: #2e7855;
+  --accent-success-soft: rgba(46, 120, 85, 0.14);
+  --accent-notice: #a86420;
+  --accent-notice-soft: rgba(168, 100, 32, 0.16);
+  --accent-critical: #9f3a2a;
+  --accent-critical-soft: rgba(159, 58, 42, 0.14);
+
+  --shadow-sm: 0 1px 2px rgba(47, 42, 36, 0.06), 0 0 0 1px rgba(47, 42, 36, 0.05);
+  --shadow-md: 0 4px 16px rgba(47, 42, 36, 0.08), 0 1px 3px rgba(47, 42, 36, 0.05);
+  --shadow-lg: 0 12px 32px rgba(47, 42, 36, 0.14);
+}
+
+/* Dark theme — deep ink with sage accent. */
+[data-theme='dark'] {
+  --bg-default: #16140f;
+  --bg-surface: #1d1b16;
+  --bg-subtle: #100e0a;
+  --bg-muted: #25221b;
+  --bg-stroke: #2a2620;
+  --bg-stroke-strong: #3a342a;
+
+  --content-primary: #f0ece2;
+  --content-secondary: #a8a294;
+  --content-tertiary: #6e695e;
+  --content-inverse: #16140f;
+  --content-link: #b8c7b1;
+  --content-link-hover: #cdd9c7;
+
+  --accent-base: #b8c7b1;
+  --accent-main: var(--accent-base);
+  --accent-main-hover: #cdd9c7;
+  --accent-main-soft: rgba(184, 199, 177, 0.12);
+  --accent-success: #4dbf8c;
+  --accent-success-soft: rgba(77, 191, 140, 0.14);
+  --accent-notice: #e0a449;
+  --accent-notice-soft: rgba(224, 164, 73, 0.16);
+  --accent-critical: #e25c48;
+  --accent-critical-soft: rgba(226, 92, 72, 0.14);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+}

@@ -1,0 +1,40 @@
+.shell {
+  display: flex;
+  flex-direction: row;
+  min-height: 100dvh;
+  background-color: var(--bg-default);
+  color: var(--content-primary);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.main {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+@media (max-width: 1023px) {
+  .shell {
+    flex-direction: column;
+  }
+
+  /* Sidebar collapses into two FABs at the top of the viewport (see
+     Sidebar.module.css). The body reclaims full width; the main column adds
+     a top clearance so heroes/hl titles don't render under the gradient
+     band that the FABs sit on. */
+  .body {
+    width: 100%;
+  }
+
+  .main {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 56px);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}

@@ -1,0 +1,131 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  background-color: color-mix(in srgb, var(--bg-default) 90%, transparent);
+  backdrop-filter: saturate(180%) blur(10px);
+  border-bottom: 1px solid var(--bg-stroke);
+  min-height: 56px;
+}
+
+/* Constrain header content to the same max-width as LessonPageLayout so the
+   breadcrumbs and lesson nav sit directly above the article column rather
+   than stretching across the full viewport. */
+.inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-8);
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  min-height: 56px;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--font-size-sm);
+  color: var(--content-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.breadcrumbRoot {
+  color: var(--content-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.breadcrumbLink {
+  color: var(--content-secondary);
+  text-decoration: none;
+  transition: color 120ms ease;
+  border-radius: var(--radius-sm);
+}
+
+.breadcrumbLink:hover {
+  color: var(--content-link-hover);
+}
+
+.breadcrumbLink:focus-visible {
+  outline: 2px solid var(--accent-main);
+  outline-offset: 2px;
+}
+
+.breadcrumbCurrent {
+  color: var(--content-primary);
+  font-weight: var(--font-weight-medium);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.breadcrumbSeparator {
+  color: var(--content-tertiary);
+  flex: 0 0 auto;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex: 0 0 auto;
+}
+
+.actions > :first-child:not(.navButton):not(.navButtonDisabled) {
+  margin-right: var(--space-3);
+}
+
+.navButton,
+.navButtonDisabled {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-md);
+  border: none;
+  background: transparent;
+  color: var(--content-secondary);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+.navButton:hover {
+  background-color: var(--bg-subtle);
+  color: var(--content-primary);
+}
+
+.navButton:focus-visible {
+  outline: 2px solid var(--accent-main);
+  outline-offset: 2px;
+}
+
+.navButtonDisabled {
+  color: var(--content-tertiary);
+  cursor: default;
+  opacity: 0.4;
+}
+
+@media (max-width: 720px) {
+  .inner {
+    padding: var(--space-3) var(--space-5);
+  }
+}
+
+/* Mobile reader mode: the sticky header is replaced by two FABs on the
+   sidebar layer (settings + program), so the breadcrumb/progress/lesson-nav
+   chrome is hidden entirely. Everything it carried — breadcrumbs context,
+   progress percent, prev/next — lives inside the program overlay and
+   inside LessonNav at the article footer. */
+@media (max-width: 1023px) {
+  .header {
+    display: none;
+  }
+}

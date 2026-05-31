@@ -1,0 +1,157 @@
+.sidebar {
+  width: var(--layout-sidebar-width);
+  /* Fixed viewport height so the flex parent doesn't stretch the column to
+     document height — otherwise the footer icons end up far below the fold. */
+  height: 100dvh;
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) 0;
+  background-color: var(--bg-default);
+  border-right: 1px solid var(--bg-stroke);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  align-items: center;
+}
+
+.footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  align-items: center;
+}
+
+.button {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--content-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    color 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease;
+}
+
+.button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.button:hover {
+  background-color: var(--bg-subtle);
+  color: var(--content-primary);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--accent-main);
+  outline-offset: 2px;
+}
+
+.button[aria-current='page'],
+.button[aria-expanded='true'] {
+  color: var(--content-primary);
+  background-color: var(--bg-subtle);
+  border-color: var(--bg-stroke);
+}
+
+/* Mobile: the sidebar becomes a transparent top-of-viewport band carrying
+   two floating action buttons — settings on the left, program on the right.
+   Home and GitHub are demoted to inside the ProgramDrawer (they used to sit
+   in the bottom dock that this file replaces). A vertical gradient fades
+   the default background into transparency so the icons stay legible over
+   any prose without painting a solid stripe across the top. */
+@media (max-width: 1023px) {
+  .sidebar {
+    position: fixed;
+    inset: 0 0 auto 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: auto;
+    transform: none;
+    width: auto;
+    height: auto;
+    min-height: 0;
+    padding: max(env(safe-area-inset-top), var(--space-2)) var(--space-4) var(--space-6);
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    z-index: var(--z-header);
+    pointer-events: none;
+  }
+
+  .nav,
+  .footer {
+    flex-direction: row;
+    width: auto;
+    gap: var(--space-2);
+    margin: 0;
+    pointer-events: auto;
+  }
+
+  /* Settings (left) is the first visual slot, Program (right) the second.
+     Flex order flips .footer ahead of .nav without changing the JSX so
+     ARIA/focus order continues to read Home → Program → Settings → GitHub
+     on desktop. */
+  .footer {
+    order: 1;
+  }
+
+  .nav {
+    order: 2;
+  }
+
+  /* Hide Home (Link) and GitHub (anchor) on mobile — their destinations
+     live inside the program overlay now. .button is the shared FAB class,
+     and only Links/anchors carry it on these spots; the program <button>
+     stays visible. */
+  .nav > a.button,
+  .footer > a.button {
+    display: none;
+  }
+
+  .button {
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--bg-stroke);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .button svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .button[aria-current='page'],
+  .button[aria-expanded='true'] {
+    background-color: var(--content-primary);
+    color: var(--bg-default);
+    border-color: var(--content-primary);
+  }
+}

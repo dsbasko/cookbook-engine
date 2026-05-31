@@ -1,0 +1,139 @@
+@import './tokens.css';
+@import './reset.css';
+@import './markdown.css';
+
+html {
+  font-family: var(--font-ui), -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui,
+    sans-serif;
+  font-size: var(--font-size-md);
+  color-scheme: light dark;
+  /* iOS Safari paints the area above the layout viewport (under the URL bar
+     chip and inside the rubber-band overscroll) with the <html> background,
+     not <body>. Without this, that area falls back to a default dark colour
+     and the FAB halos appear to clip at the top edge of the page. */
+  background-color: var(--bg-default);
+}
+
+body {
+  background-color: var(--bg-default);
+  color: var(--content-primary);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-normal);
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+a {
+  color: var(--content-link);
+  text-decoration: none;
+  transition: color 120ms ease;
+}
+
+a:hover {
+  color: var(--content-link-hover);
+}
+
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--accent-main);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+::selection {
+  background-color: var(--accent-main-soft);
+  color: var(--content-primary);
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+/* Lesson gate: the lesson page renders both the lesson body and the locked
+   interstitial side-by-side; visibility is toggled via the data attribute
+   on <html>. The attribute is set synchronously by the gate-init inline
+   script before <body> parses (no flash on direct navigation) and kept in
+   sync on the client by GateProvider (SPA route changes, cross-tab
+   localStorage updates). Default state hides the gate. */
+[data-lesson-gate] {
+  display: none;
+}
+
+html[data-lesson-locked='true'] [data-lesson-body] {
+  display: none;
+}
+
+html[data-lesson-locked='true'] [data-lesson-gate] {
+  display: block;
+}
+
+/* Cross-lesson links inside MDX prose: the inline gate-mark script flips
+   `data-locked` on any `<a>` whose `data-lesson-key` points at a still-
+   locked lesson. Visual is global because the selector targets a bare
+   attribute pattern that CSS Modules forbids; the trailing lock badge is
+   a local class on the link (see LessonAwareLink.module.css).
+   `cursor: not-allowed` signals the disabled state on hover; actual click
+   blocking is handled by the JS preventDefault in LessonAwareLink and
+   `tabindex=-1` / `aria-disabled` stamped by the gate-mark script. */
+a[data-lesson-key][data-locked='true'],
+.markdown a[data-lesson-key][data-locked='true'] {
+  color: var(--content-tertiary);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: underline dotted;
+  text-decoration-color: var(--content-tertiary);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  cursor: not-allowed;
+}
+
+a[data-lesson-key][data-locked='true']:hover {
+  color: var(--content-tertiary);
+}
+
+a[data-lesson-key][data-locked='true'] [data-lock-badge] {
+  display: inline-flex;
+}
+
+/* Free-reading mode: the progress-mode-init inline script stamps
+   `data-progress-disabled="true"` on <html> synchronously (before first paint),
+   so these rules hide every progress-gamification widget without a flash. We key
+   on the stable `data-progress-*` hooks rather than hashed CSS-module class names.
+
+   Scoping caveats (verified against the real components):
+   - The header course bar is `[data-progress-scope][role='progressbar']`. We must
+     NOT hide bare `[role='progressbar']` — ReadingProgress (scroll position) reuses
+     that role and stays visible in free-reading mode.
+   - Standalone stats cards are `aside[data-progress-scope]` (HomePage hero aside,
+     ModulePage side card). We must NOT hide bare `[data-progress-scope]` — HomePage
+     module rows are `<a data-progress-scope="module">` navigation and must stay.
+   - The per-module progress meter inside those navigation rows is wrapped in
+     `[data-module-progress]`, so we hide that whole block (status label, count,
+     and bar together) while the row itself stays navigable. Hiding only the
+     granular count/bar slots would leave the bare "/N" text, the "not started"
+     label, and the empty bar track visible.
+   - The granular `[data-progress-count]`/`[data-progress-pct]`/`[data-progress-bar]`
+     slots are still hidden directly for progress widgets that live outside a
+     module row (e.g. the header bar).
+   - The ProgramDrawer per-module done/total pill is `[data-module-badge]`. It is
+     a React-rendered "N/M" counter (not a paint-script slot), so it needs its own
+     hook to stay hidden in free-reading mode.
+   - CTA frontier rows are left alone: without gate-paint they keep their SSR
+     `data-cta-state="not-started"` baseline, so only the plain "start" variant shows
+     (the "continue/reread" progress variants stay hidden) and the Program button stays.
+   - The locked interstitial needs no rule here — it's already hidden by the gate CSS
+     above once `data-lesson-locked` is cleared. */
+html[data-progress-disabled='true'] [data-progress-scope][role='progressbar'],
+html[data-progress-disabled='true'] aside[data-progress-scope],
+html[data-progress-disabled='true'] [data-module-progress],
+html[data-progress-disabled='true'] [data-frontier-hint],
+html[data-progress-disabled='true'] [data-progress-count],
+html[data-progress-disabled='true'] [data-progress-pct],
+html[data-progress-disabled='true'] [data-progress-bar],
+html[data-progress-disabled='true'] [data-module-badge] {
+  display: none;
+}

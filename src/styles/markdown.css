@@ -1,0 +1,265 @@
+/* Markdown rendering styles for lesson pages.
+ * Scope: `.markdown` wrapper around the rendered article body.
+ * Code blocks come from rehype-pretty-code wrapped in our CodeBlock component:
+ *   <figure data-rehype-pretty-code-figure><header>…</header><div><pre data-theme="github-light night-owl"><code>…</code></pre></div></figure>
+ * The figure chrome (border, radius, header) is owned by CodeBlock.module.css.
+ * This file styles the inner pre/code and maps shiki dual-theme CSS vars
+ * (--shiki-light / --shiki-dark) onto `color` based on the root `data-theme`.
+ */
+
+.markdown {
+  font-family: var(--prose-font-active), Georgia, serif;
+  font-size: var(--prose-font-size);
+  line-height: var(--line-height-relaxed);
+  color: var(--content-primary);
+  word-wrap: break-word;
+}
+
+.markdown > * + * {
+  margin-top: var(--space-5);
+}
+
+.markdown h2 {
+  font-size: 1.75em;
+  line-height: var(--line-height-snug);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em;
+  margin-top: var(--space-10);
+  margin-bottom: var(--space-5);
+  scroll-margin-top: var(--space-12);
+}
+
+.markdown h3 {
+  font-size: 1.375em;
+  line-height: var(--line-height-snug);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.015em;
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-3);
+  scroll-margin-top: var(--space-12);
+}
+
+.markdown h4 {
+  font-size: 1.125em;
+  font-weight: var(--font-weight-semibold);
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-2);
+}
+
+.markdown p {
+  margin: 0 0 20px 0;
+  text-wrap: pretty;
+}
+
+.markdown strong {
+  font-weight: var(--font-weight-semibold);
+  color: var(--content-primary);
+}
+
+.markdown a.heading-anchor {
+  color: inherit;
+  text-decoration: none;
+}
+
+.markdown a.heading-anchor:hover {
+  color: var(--content-link);
+}
+
+/* Inline prose links: same color as body text, semibold, dotted underline.
+ * Identity in all three themes — the link reads as text first, then as a
+ * link via weight and underline (mirrors Substack / iA Writer style). */
+.markdown a:not(.heading-anchor) {
+  color: var(--content-primary);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: underline dotted;
+  text-decoration-color: var(--content-tertiary);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+.markdown a:not(.heading-anchor):hover {
+  color: var(--content-primary);
+  text-decoration-color: var(--content-primary);
+}
+
+.markdown a[data-external]::after {
+  content: ' ↗';
+  font-size: 0.8em;
+  opacity: 0.7;
+}
+
+.markdown ul,
+.markdown ol {
+  padding-left: var(--space-6);
+  margin: 0 0 20px 0;
+}
+
+.markdown ol {
+  list-style: decimal;
+}
+
+.markdown ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.markdown ul > li {
+  position: relative;
+  padding-left: var(--space-5);
+}
+
+.markdown ul > li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--content-tertiary);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.95em;
+  line-height: inherit;
+}
+
+.markdown ul ul,
+.markdown ol ol,
+.markdown ul ol,
+.markdown ol ul {
+  margin-top: var(--space-2);
+  padding-left: var(--space-6);
+}
+
+.markdown ul ul {
+  list-style: none;
+}
+
+.markdown ol ol {
+  list-style: lower-alpha;
+}
+
+.markdown li + li {
+  /* margin-top: var(--space-2); */
+}
+
+.markdown li > p {
+  margin: 0;
+}
+
+.markdown li > p + p {
+  margin-top: var(--space-2);
+}
+
+.markdown blockquote {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-left: 3px solid var(--bg-stroke-strong);
+  background-color: var(--bg-subtle);
+  color: var(--content-secondary);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.markdown blockquote > * + * {
+  margin-top: var(--space-2);
+}
+
+.markdown :not(pre) > code {
+  font-family: var(--code-font-active), ui-monospace, monospace;
+  font-size: 0.86em;
+  padding: 1px 6px;
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--bg-stroke);
+  border-radius: var(--radius-sm);
+  color: var(--content-primary);
+  white-space: nowrap;
+}
+
+.markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: inherit;
+  font-size: 0.875em;
+  display: block;
+  overflow-x: auto;
+  margin: 0 0 20px 0;
+}
+
+.markdown th,
+.markdown td {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--bg-stroke);
+  text-align: left;
+  vertical-align: top;
+}
+
+.markdown th {
+  background-color: var(--bg-subtle);
+  font-weight: var(--font-weight-semibold);
+}
+
+.markdown tr:nth-child(even) td {
+  background-color: var(--bg-subtle);
+}
+
+.markdown img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--bg-stroke);
+}
+
+.markdown hr {
+  border: 0;
+  border-top: 1px solid var(--bg-stroke);
+  margin: var(--space-8) 0;
+}
+
+/* rehype-pretty-code inner pre/code (wrapper styled by CodeBlock.module.css). */
+.markdown figure[data-rehype-pretty-code-figure] {
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-6);
+}
+
+.markdown figure[data-rehype-pretty-code-figure] pre {
+  margin: 0;
+  padding: var(--space-5);
+  overflow-x: auto;
+  font-size: var(--code-font-size);
+  line-height: 1.6;
+  background: transparent;
+  tab-size: 2;
+}
+
+.markdown figure[data-rehype-pretty-code-figure] code {
+  display: block;
+  font-family: var(--code-font-active), ui-monospace, monospace;
+  background: transparent;
+  font-variant-ligatures: none;
+}
+
+/* Fira Code is built around its ligature set (`->`, `=>`, `!=`, `===` …) —
+ * disabling them removes half its identity. Opt in only when Fira Code is the
+ * active code font; JetBrains Mono stays ligature-free per the rule above. */
+[data-code-font='fira'] .markdown figure[data-rehype-pretty-code-figure] code {
+  font-variant-ligatures: contextual;
+}
+
+.markdown figure[data-rehype-pretty-code-figure] code [data-line] {
+  display: block;
+  padding: 0;
+  min-height: 1.6em;
+}
+
+/* Dual-theme via CSS variables stamped on token spans by rehype-pretty-code.
+ * Light theme uses --shiki-light; dark theme uses --shiki-dark. */
+.markdown figure[data-rehype-pretty-code-figure] code span {
+  color: var(--shiki-light);
+  font-style: var(--shiki-light-font-style);
+  font-weight: var(--shiki-light-font-weight);
+  text-decoration: var(--shiki-light-text-decoration);
+}
+
+[data-theme='dark'] .markdown figure[data-rehype-pretty-code-figure] code span {
+  color: var(--shiki-dark);
+  font-style: var(--shiki-dark-font-style);
+  font-weight: var(--shiki-dark-font-weight);
+  text-decoration: var(--shiki-dark-text-decoration);
+}

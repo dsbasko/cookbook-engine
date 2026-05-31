@@ -1,0 +1,78 @@
+.toc {
+  font-size: 13px;
+  line-height: var(--line-height-snug);
+  color: var(--content-tertiary);
+}
+
+.heading {
+  margin: 0 0 var(--space-3) 0;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: var(--font-weight-regular);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--content-tertiary);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.item {
+  margin: 0;
+  padding: 0;
+}
+
+.item[data-depth='3'] {
+  padding-left: var(--space-3);
+}
+
+.link {
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 6px 0;
+  text-decoration: none;
+  color: var(--content-tertiary);
+  font-size: 13px;
+  line-height: 1.35;
+  transition: color 120ms ease;
+}
+
+.link:hover {
+  color: var(--content-secondary);
+}
+
+.marker {
+  width: 8px;
+  height: 1px;
+  background: var(--bg-stroke-strong);
+  transition: width 180ms ease, height 180ms ease, background-color 180ms ease;
+}
+
+.label {
+  min-width: 0;
+}
+
+.item[data-active='true'] > .link {
+  color: var(--content-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.item[data-active='true'] .marker {
+  width: 14px;
+  height: 2px;
+  background: var(--accent-main);
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--accent-main);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}

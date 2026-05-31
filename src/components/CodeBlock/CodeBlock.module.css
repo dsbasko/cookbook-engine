@@ -1,0 +1,68 @@
+.figure {
+  margin: 0;
+  border: 1px solid var(--bg-stroke);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface);
+  overflow: hidden;
+}
+
+[data-theme='dark'] .figure {
+  background-color: var(--bg-muted);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--bg-stroke);
+  background-color: var(--bg-subtle);
+}
+
+.language {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--content-tertiary);
+}
+
+.copy {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--content-secondary);
+  background-color: transparent;
+  border: 1px solid var(--bg-stroke);
+  border-radius: var(--radius-sm);
+  padding: 3px 10px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  transition:
+    color 120ms ease,
+    border-color 120ms ease,
+    background-color 120ms ease;
+}
+
+.copy:hover {
+  color: var(--content-primary);
+  border-color: var(--bg-stroke-strong);
+  background-color: var(--bg-default);
+}
+
+.copy:focus-visible {
+  outline: 2px solid var(--accent-main);
+  outline-offset: 2px;
+}
+
+.copy[data-copied='true'] {
+  color: var(--accent-success);
+  border-color: var(--accent-success);
+}
+
+.body {
+  display: block;
+}

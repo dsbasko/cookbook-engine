@@ -1,0 +1,84 @@
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.card {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 2px;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--bg-stroke);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface);
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+.card:hover {
+  border-color: var(--accent-main);
+  background-color: var(--bg-subtle);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--accent-main);
+  outline-offset: 2px;
+}
+
+.next {
+  text-align: right;
+}
+
+.label {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--content-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.01em;
+  color: var(--content-primary);
+}
+
+.placeholder {
+  display: block;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 720px) {
+  /* Single-column stack with the next-card promoted to the top so the
+     dominant flow ("finished reading → next lesson") lands as the primary
+     CTA. Prev becomes a secondary card below — same affordance, lower
+     emphasis. */
+  .row {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  .next {
+    text-align: left;
+    order: 1;
+    padding: var(--space-5) var(--space-5);
+    border-color: var(--accent-main);
+    background-color: var(--accent-main-soft);
+  }
+
+  .next .label {
+    color: var(--accent-main);
+  }
+
+  .next .title {
+    font-size: 18px;
+  }
+
+  .prev {
+    order: 2;
+  }
+}

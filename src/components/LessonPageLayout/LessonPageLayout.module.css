@@ -1,0 +1,118 @@
+.page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 56px;
+  align-items: start;
+  padding: 56px var(--space-8) 96px;
+  max-width: calc(var(--prose-max-width) + 260px + 56px + var(--space-8) * 2);
+  width: 100%;
+  margin: 0 auto;
+}
+
+.page[data-has-side='false'] {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: calc(var(--prose-max-width) + var(--space-8) * 2);
+}
+
+.content {
+  min-width: 0;
+}
+
+.article {
+  min-width: 0;
+  max-width: var(--prose-max-width);
+}
+
+.hero {
+  padding-bottom: var(--space-8);
+  margin-bottom: var(--space-8);
+  border-bottom: 1px solid var(--bg-stroke);
+}
+
+.title {
+  font-family: var(--prose-font-active), Georgia, 'Source Serif Pro', serif;
+  font-size: calc(var(--prose-font-size) * 4.5);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+  text-wrap: balance;
+}
+
+.prose {
+  font-family: var(--prose-font-active), Georgia, 'Source Serif Pro', serif;
+  font-size: var(--prose-font-size);
+  line-height: 1.7;
+  color: var(--content-primary);
+}
+
+/* Apply serif sizing to markdown body without rewriting markdown.css. */
+.prose :global(.markdown) {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* Headings inherit the prose font family so the reading-preferences toggle
+ * (serif/sans/lora) updates body copy and headings together. */
+.prose :global(.markdown h2) {
+  letter-spacing: -0.02em;
+  margin-top: 40px;
+  margin-bottom: var(--space-5);
+  scroll-margin-top: calc(56px + var(--space-4));
+}
+
+.prose :global(.markdown p) {
+  text-wrap: pretty;
+}
+
+.footer {
+  margin-top: 56px;
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--bg-stroke);
+}
+
+/* Right sidebar: sticks within its own grid column. */
+.side {
+  position: sticky;
+  top: calc(56px + var(--space-5));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding-top: var(--space-2);
+  max-height: calc(100dvh - 56px - var(--space-8));
+  overflow-y: auto;
+}
+
+@media (max-width: 1100px) {
+  .page {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+  }
+
+  .side {
+    display: none;
+  }
+
+  .title {
+    font-size: calc(var(--prose-font-size) * 3.5);
+  }
+}
+
+@media (max-width: 720px) {
+  .page {
+    padding: var(--space-6) var(--space-5) var(--space-10);
+  }
+
+  .title {
+    font-size: calc(var(--prose-font-size) * 2.4);
+  }
+
+  .prose {
+    line-height: 1.65;
+  }
+
+  .prose :global(.markdown h2) {
+    margin-top: var(--space-8);
+  }
+}
