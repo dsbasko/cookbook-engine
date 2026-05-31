@@ -1,0 +1,69 @@
+title: Demo Cookbook
+description:
+  ru: |
+    Демонстрационный курс — живой харнесс движка @dsbasko/cookbook-engine. Здесь нет реального
+    предмета: пара модулей и три урока существуют только чтобы прогонять весь UI и сборку
+    (gating, темы, i18n с fallback, TOC, sidebar, подсветка кода) на минимальном контенте.
+  en: |
+    A demo course — the living harness for the @dsbasko/cookbook-engine package. There is no real
+    subject here: two modules and three lessons exist only to exercise the full UI and build
+    (gating, themes, i18n with fallback, TOC, sidebar, code highlighting) on minimal content.
+basePath: /cookbook-engine-examples
+repoUrl: https://github.com/dsbasko/cookbook-engine
+
+# Branding is fully declarative — this section drives accent colours, the hero
+# headline, breadcrumb root label, favicon/og glyph and the og-image text. It is
+# the smoke test for Task 5 (de-kafka-ization): nothing below should render any
+# Kafka/Go literal.
+brand:
+  accent: "#7c3aed"
+  accentDark: "#a78bfa"
+  glyph: "D"
+  logo: /logo.svg
+  siteUrl: https://examples.cookbook-engine.dev
+  level: "Demo"
+  breadcrumbRoot: { ru: Demo Cookbook, en: Demo Cookbook }
+  hero:
+    lead: { ru: Демонстрационный, en: A demo }
+    accent: { ru: Cookbook, en: Cookbook }
+    tail: { ru: движок на практике, en: engine in practice }
+  ogImage:
+    title: { ru: Demo Cookbook, en: Demo Cookbook }
+    subtitle: { ru: Харнесс движка cookbook-engine, en: The cookbook-engine harness }
+    footerTag: "cookbook-engine · demo"
+    alt: { ru: Demo Cookbook — харнесс движка cookbook-engine, en: Demo Cookbook — the cookbook-engine harness }
+
+modules:
+  - id: basics
+    title: { ru: Основы, en: Basics }
+    description:
+      ru: |
+        Минимальный модуль: первый урок с подсветкой кода и callout-ами, второй — намеренно
+        переведён только на русский, чтобы проверить fallback-баннер на английской странице.
+      en: |
+        A minimal module: the first lesson exercises code highlighting and callouts, the second is
+        intentionally Russian-only to verify the fallback banner on the English page.
+    lessons:
+      - slug: 01-hello-world
+        title: { ru: Привет, мир, en: Hello, world }
+        duration: 10m
+        tags: [intro, demo]
+      - slug: 02-second-lesson
+        title: { ru: Второй урок, en: Second lesson }
+        duration: 15m
+        tags: [basics]
+
+  - id: advanced
+    title: { ru: Продвинутое, en: Advanced }
+    description:
+      ru: |
+        Второй модуль с одним уроком — нужен, чтобы в sidebar и на главной было больше одного
+        модуля и работала кросс-модульная навигация (prev/next через границу модуля).
+      en: |
+        A second module with a single lesson — needed so the sidebar and home page show more than
+        one module and cross-module navigation (prev/next across a module boundary) works.
+    lessons:
+      - slug: 01-deep-dive
+        title: { ru: Глубокое погружение, en: Deep dive }
+        duration: 20m
+        tags: [advanced]
