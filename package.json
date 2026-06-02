@@ -1,6 +1,6 @@
 {
   "name": "@dsbasko/cookbook-engine",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "type": "module",
   "description": "Reusable Next.js engine for cookbook-style courses driven by course.yaml + markdown lectures.",
   "author": "Dmitriy Basenko",
